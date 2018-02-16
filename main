@@ -1,0 +1,69 @@
+#!/bin/bash
+#PBS -k o
+#PBS -l nodes=1:ppn=8,walltime=3:00:00
+
+## modules
+echo "Loading modules"
+module unload matlab
+module load matlab/2017a
+module load spm/8
+module unload python
+module load dipy/dev
+echo "Finished loading modules"
+
+export PYTHONPATH=/N/dc2/projects/lifebid/code/bacaron/nibabel:$PYTHONPATH
+
+echo "copying moving and static tractograms"
+moving=`./jq -r '.tractogram_moving' config.json`
+static=`./jq -r '.tractogram_static' config.json`
+cp $moving ./;
+cp $static ./;
+echo "Finished copying tractograms"
+
+# Build LAP environment
+echo "Building LAP environment"
+if [ -f "linear_assignment.c" ];then
+	echo "LAP already built. Skipping"
+else
+	cython linear_assignment.pyx;
+	python setup_lapjv.py build_ext --inplace;
+
+	ret=$?
+	if [ ! $ret -eq 0 ]; then
+		echo "LAP environment build failed"
+		echo $ret > finished
+		exit $ret
+	fi
+fi
+
+# Tractogram Input converter
+echo "Input conversion to trk"
+if [ -f "life_moving_output.trk" ];then
+	echo "Already in proper format. Skipping conversion"
+else
+	matlab -nosplash -nodisplay -r "lifeConverter()";
+
+	ret=$?
+	if [ ! $ret -eq 0 ]; then
+		echo "Tractogram conversion failed"
+		echo $ret > finished
+		exit $ret
+	fi
+fi
+
+# Run LAP single example
+echo "Running LAP single example"
+if [ -f "tract.trk" ];then
+	echo "File exists. Complete"
+else
+	python lap_single_example.py -moving life_moving_output.trk -static life_static_output.trk -ex ./*_tract.trk* -out tract.trk;
+
+	ret=$?
+	if [ ! $ret -eq 0 ]; then
+		echo "LAP single example failed"
+		echo $ret > finished
+		exit $ret
+	fi
+fi
+
+echo "Complete"
