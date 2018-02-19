@@ -11,7 +11,7 @@ module unload python
 module load dipy/dev
 echo "Finished loading modules"
 
-export PYTHONPATH=/N/dc2/projects/lifebid/code/bacaron/nibabel:$PYTHONPATH
+export PYTHONPATH=/N/u/gberto/Karst/git/nibabel:$PYTHONPATH
 
 echo "copying moving and static tractograms"
 moving=`./jq -r '.tractogram_moving' config.json`
