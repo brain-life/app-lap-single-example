@@ -138,6 +138,7 @@ def save_bundle(estimated_bundle_idx, static_tractogram, out_filename):
 		estimated_bundle = static_tractogram[estimated_bundle_idx]
 
 		# Saving tractogram
+		aff_vox_to_ras = static_tractogram.affine
 		t = nib.streamlines.tractogram.Tractogram(estimated_bundle, affine_to_rasmm=np.eye(4))
 		print("Saving bundle in %s" % out_filename)
 		nib.streamlines.save(t, out_filename)
