@@ -57,7 +57,9 @@ echo "Running LAP single example"
 if [ -f "tract.trk" ];then
 	echo "File exists. Complete"
 else
-	python lap_single_example.py -moving life_moving_output.trk -static life_static_output.trk -ex ./*_tract.trk* -out ${subjID}_tract.trk;
+	tract_name='./*tract.trk'
+	base_name=$(basename $tract_name)
+	python lap_single_example.py -moving life_moving_output.trk -static life_static_output.trk -ex $tract_name -out ${subjID}_$base_name;
 
 	ret=$?
 	if [ ! $ret -eq 0 ]; then
