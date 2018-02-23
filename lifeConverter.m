@@ -8,8 +8,8 @@ addpath(genpath('/N/u/brlife/git/encode'));
 config = loadjson('config.json');
 fe_src_moving = fullfile(config.tractogram_moving);
 fe_src_static = fullfile(config.tractogram_static);
-ref_src_moving = fullfile(config.dwi_moving);
-ref_src_static = fullfile(config.dwi_static);
+ref_src_moving = fullfile(config.t1_moving);
+ref_src_static = fullfile(config.t1_static);
 trk_out_moving = 'life_moving_output.trk';
 trk_out_static = 'life_static_output.trk';
 
