@@ -23,15 +23,15 @@ echo "Finished copying tractograms"
 
 # Check the inputs subject id
 echo "Check the inputs subject id"
-mov_life_id=`./jq -r '._inputs[0].meta.subject' config.json`
-stat_life_id=`./jq -r '._inputs[1].meta.subject' config.json`
-mov_t1_id=`./jq -r '._inputs[2].meta.subject' config.json`
-mov_afq_id=`./jq -r '._inputs[3].meta.subject' config.json`
-stat_t1_id=`./jq -r '._inputs[4].meta.subject' config.json`
+stat_life_id=`./jq -r '._inputs[0].meta.subject' config.json`
+stat_t1_id=`./jq -r '._inputs[1].meta.subject' config.json`
+mov_afq_id=`./jq -r '._inputs[2].meta.subject' config.json`
+mov_life_id=`./jq -r '._inputs[3].meta.subject' config.json`
+mov_t1_id=`./jq -r '._inputs[4].meta.subject' config.json`
 if [ $mov_life_id == $mov_t1_id -a $mov_life_id == $mov_afq_id -a $stat_life_id == $stat_t1_id ]; then
 	echo "Inputs subject id correctly inserted"
 else
-	echo "Check the inputs subject id"
+	echo "Inputs subject id incorrectly inserted. Check them again."
 	exit 1
 fi
 
