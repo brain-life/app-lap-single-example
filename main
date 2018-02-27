@@ -16,7 +16,7 @@ export PYTHONPATH=/N/u/brlife/git/nibabel:$PYTHONPATH
 echo "copying moving and static tractograms"
 moving=`./jq -r '.tractogram_moving' config.json`
 static=`./jq -r '.tractogram_static' config.json`
-subjID=`./jq -r '._outputs[].meta.subject' config.json`
+subjID=`./jq -r '._inputs[0].meta.subject' config.json`
 cp $moving ./;
 cp $static ./;
 echo "Finished copying tractograms"
