@@ -29,9 +29,9 @@ mov_afq_id=`./jq -r '._inputs[2].meta.subject' config.json`
 mov_life_id=`./jq -r '._inputs[3].meta.subject' config.json`
 mov_t1_id=`./jq -r '._inputs[4].meta.subject' config.json`
 if [ $mov_life_id == $mov_t1_id -a $mov_life_id == $mov_afq_id -a $stat_life_id == $stat_t1_id ]; then
-	echo "Inputs subject id correctly inserted"
+	echo "Inputs subject IDs correctly inserted"
 else
-	echo "Inputs subject id incorrectly inserted. Check them again."
+	echo "Inputs subject IDs incorrectly inserted. Check them again."
 	exit 1
 fi
 
@@ -72,8 +72,9 @@ if [ -f "tract.trk" ];then
 	echo "File exists. Complete"
 else
 	tract_name='./*tract.trk'
-	base_name=$(basename $tract_name)
-	python lap_single_example.py -moving life_moving_output.trk -static life_static_output.trk -ex $tract_name -out ${subjID}'_'$base_name;
+	base_name=$(basename $tract_name .tck)
+	output_filename=${subjID}'_'$base_name'_E'$mov_afq_id'.tck'
+	python lap_single_example.py -moving life_moving_output.trk -static life_static_output.trk -ex $tract_name -out $output_filename;
 
 	ret=$?
 	if [ ! $ret -eq 0 ]; then
