@@ -74,8 +74,9 @@ else
 	tract_name='./*tract.trk'
 	base_name=$(basename $tract_name .trk)
 	output_filename=${subjID}'_'$base_name'_E'$mov_afq_id'.tck'
+	array_filename='result_lap'
 	python lap_single_example.py -moving life_moving_output.trk -static life_static_output.trk -ex $tract_name -out $output_filename;
-	mv result_lap.npy ${subID}'_'$base_name'_result_lap_E'$mov_afq_id'.npy'
+	mv result_lap.npy ${subjID}'_'${base_name/tract/$array_filename}'_E'$mov_afq_id'.npy'
 
 	ret=$?
 	if [ ! $ret -eq 0 ]; then
