@@ -14,20 +14,20 @@ echo "Finished loading modules"
 export PYTHONPATH=/N/u/brlife/git/nibabel:$PYTHONPATH
 
 echo "copying moving and static tractograms"
-moving=`./jq -r '.tractogram_moving' config.json`
-static=`./jq -r '.tractogram_static' config.json`
-subjID=`./jq -r '._inputs[0].meta.subject' config.json`
+moving=`jq -r '.tractogram_moving' config.json`
+static=`jq -r '.tractogram_static' config.json`
+subjID=`jq -r '._inputs[0].meta.subject' config.json`
 cp $moving ./;
 cp $static ./;
 echo "Finished copying tractograms"
 
 # Check the inputs subject id
 echo "Check the inputs subject id"
-stat_life_id=`./jq -r '._inputs[0].meta.subject' config.json`
-stat_t1_id=`./jq -r '._inputs[1].meta.subject' config.json`
-mov_afq_id=`./jq -r '._inputs[2].meta.subject' config.json`
-mov_life_id=`./jq -r '._inputs[3].meta.subject' config.json`
-mov_t1_id=`./jq -r '._inputs[4].meta.subject' config.json`
+stat_life_id=`jq -r '._inputs[0].meta.subject' config.json`
+stat_t1_id=`jq -r '._inputs[1].meta.subject' config.json`
+mov_afq_id=`jq -r '._inputs[2].meta.subject' config.json`
+mov_life_id=`jq -r '._inputs[3].meta.subject' config.json`
+mov_t1_id=`jq -r '._inputs[4].meta.subject' config.json`
 if [ $mov_life_id == $mov_t1_id -a $mov_life_id == $mov_afq_id -a $stat_life_id == $stat_t1_id ]; then
 	echo "Inputs subject IDs correctly inserted"
 else
