@@ -131,7 +131,7 @@ def save_bundle(estimated_bundle_idx, static_tractogram, out_filename):
 		# Saving tractogram
 		t = nib.streamlines.tractogram.Tractogram(estimated_bundle, affine_to_rasmm=np.eye(4))
 		nib.streamlines.save(t, out_filename , header=hdr)
-		print("Tractogram saved in %s" % out_filename)
+		print("Bundle saved in %s" % out_filename)
 
 	elif extension == '.tck':
 		print("Saving bundle in %s" % out_filename)
