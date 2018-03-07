@@ -72,7 +72,7 @@ if [ -f "tract.trk" ];then
 	echo "File exists. Complete"
 else
 	tract_name='./*tract.trk'
-	base_name=$(basename $tract_name .tck)
+	base_name=$(basename $tract_name .trk)
 	output_filename=${subjID}'_'$base_name'_E'$mov_afq_id'.tck'
 	python lap_single_example.py -moving life_moving_output.trk -static life_static_output.trk -ex $tract_name -out $output_filename;
 
