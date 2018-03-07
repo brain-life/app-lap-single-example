@@ -165,6 +165,8 @@ if __name__ == '__main__':
 
 	result_lap = lap_single_example(args.moving, args.static, args.ex)
 
+	np.save('result_lap', result_lap)
+
 	if args.out:
 		estimated_bundle_idx = result_lap[0]
 		save_bundle(estimated_bundle_idx, args.static, args.out)
