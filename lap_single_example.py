@@ -140,7 +140,6 @@ def save_bundle(estimated_bundle_idx, static_tractogram, out_filename):
 		# Creating header
 		hdr = nib.streamlines.tck.TckFile.create_empty_header()
 		hdr['voxel_sizes'] = voxel_sizes
-		hdr['voxel_order'] = 'LAS'
 		hdr['dimensions'] = dimensions
 		hdr['voxel_to_rasmm'] = aff_vox_to_ras
 
