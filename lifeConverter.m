@@ -19,6 +19,7 @@ fe2trk(fe_src_static, ref_src_static, trk_out_static);
 
 % Convert segmentation
 load(fullfile(config.segmentation));
+tract_name_list = {}
 write_fg_to_trk(fg_classified(config.tract),ref_src_moving,sprintf('%s_tract.trk',strrep(fg_classified(config.tract).name,' ','_')));
 
 exit;
