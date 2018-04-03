@@ -19,12 +19,12 @@ fe2trk(fe_src_static, ref_src_static, trk_out_static);
 
 % Convert segmentation
 load(fullfile(config.segmentation));
+fid=fopen('tract_name_list.txt', 'w');
 for tract = [config.tract1, config.tract2, config.tract3, config.tract4]
-    if (tract != "null")
+    if (tract > 0)
         tract_name=strrep(fg_classified(tract).name,' ','_');
         write_fg_to_trk(fg_classified(tract),ref_src_moving,sprintf('%s_tract.trk',tract_name));
-	fid=fopen('tract_name_list.txt', 'w');
-	fprintf(fid, [tract, '\n']);
+	fprintf(fid, [tract_name, '\n']);
     end
 end
 
