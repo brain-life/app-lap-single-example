@@ -90,4 +90,39 @@ if [ ! $ret -eq 0 ]; then
 	exit $ret
 fi
 
+
+# Build a fg structure from tck registered
+while read tract_name; do         
+
+    echo "Tract name: $tract_name"; 
+
+    tck_filename=\'${subjID}_${tract_name}_tract_E${mov_afq_id}.tck\';
+    tract_filename=\'$tract_name\';
+    echo $tck_filename;
+    echo $tract_filename
+    matlab -nosplash -nodisplay -r "my_convert_tck2fg($tck_filename, $tract_filename)";
+
+    if [ -f $tract_name'.mat' ]; then 
+    	echo "tck2fg conversion done."
+    else 
+	echo "tck2fg conversion failed."
+	exit 1
+    fi
+    
+done < tract_name_list.txt
+
+
+# Merge the fg structures and create the files for the wmc structure
+echo "Creating the WMC structure"
+output_filename=${subjID}'_var-partial_tract_'E${mov_afq_id}'.tck';
+python build_partial_tractogram.py -tracts_tck_dir 'tracts_tck' -out ${output_filename};
+matlab -nosplash -nodisplay -r "my_fg_merge()";
+
+if [ -f 'output.mat' ]; then 
+    	echo "WCM structure created."
+else 
+	echo "WCM structure missing."
+	exit 1
+fi
+
 echo "Complete"
