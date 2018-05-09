@@ -52,9 +52,13 @@ else
 fi
 
 # Tractogram Input converter
-echo "Input conversion to trk"
-if [ -f "life_moving_output.trk" ];then
-	echo "Already in proper format. Skipping conversion"
+echo "Tractogram conversion to trk"
+if [ -f $mov_life_id'_track.tck' -a $stat_life_id'_track.tck' ];then
+	echo "Input in tck format. Convert it to trk."
+	mov_t1=`jq -r '.t1_moving' config.json`
+	stat_t1=`jq -r '.t1_static' config.json`
+	python tck2trk.py $mov_t1 $moving
+	python tck2trk.py $stat_t1 $static
 else
 	matlab -nosplash -nodisplay -r "lifeConverter()";
 
@@ -65,6 +69,16 @@ else
 		exit $ret
 	fi
 fi
+
+# AFQ conversion
+echo "AFQ conversion to trk"
+matlab -nosplash -nodisplay -r "afqConverter1()";
+ret=$?
+	if [ ! $ret -eq 0 ]; then
+		echo "AFQ conversion failed"
+		echo $ret > finished
+		exit $ret
+	fi
 
 # Run LAP single example
 echo "Running LAP single example"
