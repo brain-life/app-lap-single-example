@@ -13,14 +13,6 @@ echo "Finished loading modules"
 
 export PYTHONPATH=/N/u/brlife/git/nibabel:$PYTHONPATH
 
-echo "copying moving and static tractograms"
-moving=`jq -r '.tractogram_moving' config.json`
-static=`jq -r '.tractogram_static' config.json`
-subjID=`jq -r '._inputs[0].meta.subject' config.json`
-cp $moving ./;
-cp $static ./;
-echo "Finished copying tractograms"
-
 # Check the inputs subject id
 echo "Check the inputs subject id"
 stat_life_id=`jq -r '._inputs[0].meta.subject' config.json`
@@ -34,6 +26,16 @@ else
 	echo "Inputs subject IDs incorrectly inserted. Check them again."
 	exit 1
 fi
+
+
+echo "Copying moving and static tractograms"
+moving=`jq -r '.tractogram_moving' config.json`
+static=`jq -r '.tractogram_static' config.json`
+subjID=`jq -r '._inputs[0].meta.subject' config.json`
+cp $moving ./$mov_life_id'_'$moving;
+cp $static ./$stat_life_id'_'$static;
+echo "Finished copying tractograms"
+
 
 # Build LAP environment
 echo "Building LAP environment"
