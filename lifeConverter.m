@@ -1,9 +1,12 @@
 function out = lifeConverter()
 
-addpath(genpath('/N/u/hayashis/BigRed2/git/vistasoft'));
-addpath(genpath('/N/u/brlife/git/jsonlab'));
-addpath(genpath('/N/u/brlife/git/o3d-code'));
-addpath(genpath('/N/u/brlife/git/encode'));
+if ~deployed
+    disp('adding path')
+    addpath(genpath('/N/u/brlife/git/vistasoft'));
+    addpath(genpath('/N/u/brlife/git/jsonlab'));
+    addpath(genpath('/N/u/brlife/git/o3d-code'));
+    addpath(genpath('/N/u/brlife/git/encode'));
+end
 
 config = loadjson('config.json');
 fe_src_moving = fullfile(config.tractogram_moving);

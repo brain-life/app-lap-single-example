@@ -1,0 +1,11 @@
+{
+"t1_moving": "/mnt/scratch/testdata/683256/anat/683256_t1.nii.gz",
+"tractogram_moving": "/mnt/scratch/testdata/683256/life_5aac599bf0b5260027e24aea/683256_output_fe.mat",
+"segmentation": "/mnt/scratch/testdata/683256/wmc_5ab014b88b8331004f795201/683256_output.mat",
+"t1_static": "/mnt/scratch/testdata/683256/anat/683256_t1.nii.gz",
+"tractogram_static": "/mnt/scratch/testdata/683256/life_5aac599bf0b5260027e24aea/683256_output_fe.mat",
+"tract1": 7,
+"tract2": 12,
+"tract3": 4,
+"tract4": ""
+}
