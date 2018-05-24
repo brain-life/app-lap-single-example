@@ -16,7 +16,7 @@ from dipy.tracking.streamline import apply_affine
 from dissimilarity import compute_dissimilarity, dissimilarity
 from dipy.tracking.distances import bundles_distances_mam
 from sklearn.neighbors import KDTree
-from dipy.viz import fvtk
+import pickle
 
 try:
     from linear_assignment import LinearAssignment
@@ -26,40 +26,13 @@ except ImportError:
     from linear_assignment_numpy import LinearAssignment
 
 
-def compute_kdtree_and_dr_tractogram(tractogram, num_prototypes=None):
-    """Compute the dissimilarity representation of the target tractogram and 
-    build the kd-tree.
-    """
-    import time
-    t0=time.time()
-    tractogram = np.array(tractogram, dtype=np.object)
-    print("Computing dissimilarity matrices...")
-    if num_prototypes is None:
-        num_prototypes = 40
-        print("Using %s prototypes as in Olivetti et al. 2012."
-              % num_prototypes)
-    print("Using %s prototypes" % num_prototypes)
-    dm_tractogram, prototype_idx = compute_dissimilarity(tractogram,
-                                                         num_prototypes=num_prototypes,
-                                                         distance=bundles_distances_mam,
-                                                         prototype_policy='sff',
-                                                         n_jobs=-1,
-                                                         verbose=False)
-    prototypes = tractogram[prototype_idx]
-    print("Building the KD-tree of tractogram.")
-    kdt = KDTree(dm_tractogram)
-    t1=time.time()
-    print("Time elaplsed: %s" %(t1-t0))
-    return kdt, prototypes    
-
-
 def RLAP(kdt, k, dm_source_tract, source_tract, tractogram, distance):
     """Code for Rectangular Linear Assignment Problem.
     """
     tractogram = np.array(tractogram, dtype=np.object)
     D, I = kdt.query(dm_source_tract, k=k)
     superset = np.unique(I.flat)
-    np.save('superset_idx', superset)
+    #np.save('superset_idx', superset)
     print("Computing the cost matrix (%s x %s) for RLAP... " % (len(source_tract),
                                                              len(superset)))
     cost_matrix = dissimilarity(source_tract, tractogram[superset], distance)
@@ -71,37 +44,20 @@ def RLAP(kdt, k, dm_source_tract, source_tract, tractogram, distance):
     return estimated_bundle_idx, min_cost_values
 
 
-def show_tracts(estimated_target_tract, target_tract):
-	"""Visualization of the tracts.
-	"""
-	ren = fvtk.ren()
-	fvtk.add(ren, fvtk.line(estimated_target_tract, fvtk.colors.green,
-	                        linewidth=1, opacity=0.3))
-	fvtk.add(ren, fvtk.line(target_tract, fvtk.colors.white,
-	                        linewidth=2, opacity=0.3))
-	fvtk.show(ren)
-	fvtk.clear(ren)
-
-
-def lap_single_example(moving_tractogram, static_tractogram, example):
+def single_lap(moving_tractogram, static_tractogram, kdt, prototypes, example, k=500, distance_func = bundles_distances_mam):
 	"""Code for LAP from a single example.
 	"""
-	k = 500
-	distance_func = bundles_distances_mam
-
-	print("Computing the affine slr transformation.")
-	affine = tractograms_slr(moving_tractogram, static_tractogram)
+	print("Retrieving affine from dictionary.")
+	table_filename = 'affine_dictionary.pickle'
+	moving_tractogram_basename = ntpath.basename(moving_tractogram)
+	static_tractogram_basename = ntpath.basename(static_tractogram)
+	affine = table[moving_tractogram_basename, static_tractogram_basename].items()[0][1]
 
 	print("Applying the affine to the example bundle.")
 	example_bundle = nib.streamlines.load(example)
 	example_bundle = example_bundle.streamlines
 	example_bundle_aligned = np.array([apply_affine(affine, s) for s in example_bundle])
 	
-	print("Compute the dissimilarity representation of the target tractogram and build the kd-tree.")
-	static_tractogram = nib.streamlines.load(static_tractogram)
-	static_tractogram = static_tractogram.streamlines
-	kdt, prototypes = compute_kdtree_and_dr_tractogram(static_tractogram)
-
 	print("Compute the dissimilarity of the aligned example bundle with the prototypes of target tractogram.")
 	example_bundle_aligned = np.array(example_bundle_aligned, dtype=np.object)
 	dm_example_bundle_aligned = distance_func(example_bundle_aligned, prototypes)
@@ -153,7 +109,7 @@ def save_bundle(estimated_bundle_idx, static_tractogram, out_filename):
 		print("Bundle saved in %s" % out_filename)
 
 	else:
-		print("%s format not supported." % extension)
+		print("%s format not supported." % extension)	
 
 
 if __name__ == '__main__':
@@ -164,16 +120,19 @@ if __name__ == '__main__':
 	parser.add_argument('-moving', nargs='?', const=1, default='',
 	                    help='The moving tractogram filename')
 	parser.add_argument('-static', nargs='?',  const=1, default='',
-	                    help='The static tractogram filename')
+	                    help='The static tractogram filename') 
 	parser.add_argument('-ex', nargs='?',  const=1, default='',
 	                    help='The example (moving) bundle filename')  
 	parser.add_argument('-out', nargs='?',  const=1, default='',
 	                    help='The output estimated bundle filename')                               
 	args = parser.parse_args()
 
-	result_lap = lap_single_example(args.moving, args.static, args.ex)
+	print("Retrieving kdt and prototypes.")
+	kdt_filename='kdt'
+	kdt = pickle.load(open(kdt_filename))
+	prototypes = np.load('prototypes.npy')
 
-	np.save('result_lap', result_lap)
+	result_lap = lap_single_example(args.moving, args.static, kdt, prototypes, args.ex)
 
 	if args.out:
 		estimated_bundle_idx = result_lap[0]
