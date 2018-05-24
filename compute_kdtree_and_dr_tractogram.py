@@ -50,7 +50,10 @@ if __name__ == '__main__':
 	                    help='The moving tractogram filename')                  
 	args = parser.parse_args()
 
-	kdt, prototypes = compute_kdtree_and_dr_tractogram(args.static)	
+	static_tractogram = nib.streamlines.load(args.static)
+	static_tractogram = static_tractogram.streamlines
+
+	kdt, prototypes = compute_kdtree_and_dr_tractogram(static_tractogram)	
 
 	#Saving files
 	kdt_filename='kdt'
