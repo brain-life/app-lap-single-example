@@ -82,7 +82,7 @@ fi
 
 # AFQ conversion
 echo "AFQ conversion to trk"
-matlab -nosplash -nodisplay -r "afqConverter1()";
+#matlab -nosplash -nodisplay -r "afqConverter1()";
 ret=$?
 	if [ ! $ret -eq 0 ]; then
 		echo "AFQ conversion failed"
@@ -92,7 +92,7 @@ ret=$?
 
 # Compute affine transformation with SLR
 echo "Compute affine with SLR"
-python tractograms_slr.py -moving $mov_life_id'_track.trk' -static $stat_life_id'_track.trk' 
+#python tractograms_slr.py -moving $mov_life_id'_track.trk' -static $stat_life_id'_track.trk' 
 ret=$?
 	if [ ! $ret -eq 0 ]; then
 		echo "Alignment failed"
@@ -102,7 +102,7 @@ ret=$?
 
 # Compute dissimilarity of target tractogram
 echo "Compute dissimilarity of target tractogram"
-python compute_kdt_and_dr_tractogram.py -static $stat_life_id'_track.trk' 
+python compute_kdtree_and_dr_tractogram.py -static $stat_life_id'_track.trk' 
 ret=$?
 	if [ ! $ret -eq 0 ]; then
 		echo "Alignment failed"
