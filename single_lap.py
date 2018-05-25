@@ -8,6 +8,7 @@ import os
 import sys
 import argparse
 import os.path
+import ntpath
 import nibabel as nib
 import numpy as np
 from nibabel.streamlines import load
@@ -32,7 +33,7 @@ def RLAP(kdt, k, dm_source_tract, source_tract, tractogram, distance):
     tractogram = np.array(tractogram, dtype=np.object)
     D, I = kdt.query(dm_source_tract, k=k)
     superset = np.unique(I.flat)
-    #np.save('superset_idx', superset)
+    np.save('superset_idx', superset)
     print("Computing the cost matrix (%s x %s) for RLAP... " % (len(source_tract),
                                                              len(superset)))
     cost_matrix = dissimilarity(source_tract, tractogram[superset], distance)
@@ -49,6 +50,7 @@ def single_lap(moving_tractogram, static_tractogram, kdt, prototypes, example, k
 	"""
 	print("Retrieving affine from dictionary.")
 	table_filename = 'affine_dictionary.pickle'
+	table = pickle.load(open(table_filename))
 	moving_tractogram_basename = ntpath.basename(moving_tractogram)
 	static_tractogram_basename = ntpath.basename(static_tractogram)
 	affine = table[moving_tractogram_basename, static_tractogram_basename].items()[0][1]
@@ -63,6 +65,8 @@ def single_lap(moving_tractogram, static_tractogram, kdt, prototypes, example, k
 	dm_example_bundle_aligned = distance_func(example_bundle_aligned, prototypes)
 
 	print("Segmentation as Rectangular linear Assignment Problem (RLAP).")
+	static_tractogram = nib.streamlines.load(static_tractogram)
+	static_tractogram = static_tractogram.streamlines
 	estimated_bundle_idx, min_cost_values = RLAP(kdt, k, dm_example_bundle_aligned, example_bundle_aligned, static_tractogram, distance_func)
 	estimated_bundle = static_tractogram[estimated_bundle_idx]
 
@@ -132,7 +136,9 @@ if __name__ == '__main__':
 	kdt = pickle.load(open(kdt_filename))
 	prototypes = np.load('prototypes.npy')
 
-	result_lap = lap_single_example(args.moving, args.static, kdt, prototypes, args.ex)
+	result_lap = single_lap(args.moving, args.static, kdt, prototypes, args.ex)
+
+	np.save('result_lap', result_lap)
 
 	if args.out:
 		estimated_bundle_idx = result_lap[0]

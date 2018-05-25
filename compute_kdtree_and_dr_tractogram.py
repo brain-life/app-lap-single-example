@@ -38,7 +38,7 @@ def compute_kdtree_and_dr_tractogram(tractogram, num_prototypes=None, distance=b
     prototypes = tractogram[prototype_idx]
     print("Building the KD-tree of tractogram.")
     kdt = KDTree(dm_tractogram)
-    print("Time spent to compute the dissimilarity representaion of the tractogram: %i minutes" %((time.time()-t0)/60))
+    print("Time spent to compute the dissimilarity representation of the tractogram: %i minutes" %((time.time()-t0)/60))
     return kdt, prototypes
 
 

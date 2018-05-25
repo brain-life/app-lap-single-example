@@ -1,6 +1,6 @@
 function out = lifeConverter()
 
-if ~deployed
+if ~isdeployed
     disp('adding path')
     addpath(genpath('/N/u/brlife/git/vistasoft'));
     addpath(genpath('/N/u/brlife/git/jsonlab'));
