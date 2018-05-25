@@ -1,9 +1,11 @@
 function out = afqConverter1()
 
-addpath(genpath('/N/u/hayashis/BigRed2/git/vistasoft'));
-addpath(genpath('/N/u/brlife/git/jsonlab'));
-addpath(genpath('/N/u/brlife/git/o3d-code'));
-addpath(genpath('/N/u/brlife/git/encode'));
+if ~isdeployed
+	addpath(genpath('/N/u/hayashis/BigRed2/git/vistasoft'));
+	addpath(genpath('/N/u/brlife/git/jsonlab'));
+	addpath(genpath('/N/u/brlife/git/o3d-code'));
+	addpath(genpath('/N/u/brlife/git/encode'));
+end
 
 config = loadjson('config.json');
 ref_src = fullfile(config.t1_moving);
