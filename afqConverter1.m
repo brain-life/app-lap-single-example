@@ -1,10 +1,11 @@
 function out = afqConverter1()
 
 if ~isdeployed
-	addpath(genpath('/N/u/hayashis/BigRed2/git/vistasoft'));
+	%addpath(genpath('/N/u/hayashis/BigRed2/git/vistasoft'));
+	addpath(genpath('/N/u/brlife/git/vistasoft'));
 	addpath(genpath('/N/u/brlife/git/jsonlab'));
 	addpath(genpath('/N/u/brlife/git/o3d-code'));
-	addpath(genpath('/N/u/brlife/git/encode'));
+	%addpath(genpath('/N/u/brlife/git/encode'));
 end
 
 config = loadjson('config.json');

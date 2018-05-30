@@ -43,7 +43,7 @@ if [ -f $mov_life_id'_track.tck' -a $stat_life_id'_track.tck' ];then
 	stat_t1=`jq -r '.t1_static' config.json`
 	#python tck2trk.py $mov_t1 $mov_life_id'_track.tck';
 	#python tck2trk.py $stat_t1 $stat_life_id'_track.tck';
-    singularity exec docker://brainlife/dipy:0.14 "python ./tck2trk.py $mov_t1 ${mov_life_id}_track.tck && python ./tck2trk.py $stat_t1 ${stat_life_id}_track.tck"
+    singularity exec docker://brainlife/dipy:0.14 bash -c "python ./tck2trk.py $mov_t1 ${mov_life_id}_track.tck && python ./tck2trk.py $stat_t1 ${stat_life_id}_track.tck"
 else
 	echo "Input in fe format. Convert it to trk."
 	#matlab -nosplash -nodisplay -r lifeConverter
@@ -60,7 +60,7 @@ else
 fi
 
 echo "AFQ conversion to trk"
-#matlab -nosplach -nodisplay -r "afqConverter1()"
+#matlab -nosplash -nodisplay -r "afqConverter1()"
 singularity exec docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/afqConverter1
 ret=$?
 	if [ ! $ret -eq 0 ]; then
