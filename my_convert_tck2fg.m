@@ -4,7 +4,7 @@ if ~isdeployed
 	addpath(genpath('/N/u/hayashis/BigRed2/git/vistasoft'));
 end
 
-fg_classified = dtiImportFibersMrtrix_local(tck_filename, 0.2, 0.5);
+fg_classified = dtiImportFibersMrtrix(tck_filename, 0.2, 0.5);
 fgWrite(fg_classified, tract_name, 'mat');
 
 exit;
