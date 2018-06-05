@@ -1,7 +1,7 @@
 function my_fg_merge()
 
 if ~isdeployed
-	addpath(genpath('/N/u/hayashis/BigRed2/git/vistasoft'));
+	addpath(genpath('/N/u/brlife/git/vistasoft'));
 	addpath(genpath('/N/u/brlife/git/encode'))
 	addpath(genpath('/N/u/brlife/git/jsonlab'))
 	addpath(genpath('/N/u/kitchell/Karst/Applications/mba'))
