@@ -113,10 +113,10 @@ else
 fi
 
 echo "Build a wmc structure"
-tck_filename=\'tracts_tck/${subjID}_${tract_name}_tract_E${mov_afq_id}.tck\';
-#matlab -nosplash -nodisplay -r "build_wmc_structure($tck_filename)";
-tck_filename='tracts_tck/'${subjID}'_'${tract_name}'_tract_E'${mov_afq_id}'.tck';
-singularity exec docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/build_wmc_structure $tck_filename
+stat_sub=\'$subjID\'
+mov_sub=\'$mov_afq_id\'
+#matlab -nosplash -nodisplay -r "build_wmc_structure($stat_sub, $mov_sub)";
+singularity exec docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/build_wmc_structure $subjID $mov_afq_id
 if [ -f 'output.mat' ]; then 
     echo "WMC structure created."
 else 

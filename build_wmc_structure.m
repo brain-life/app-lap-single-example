@@ -1,4 +1,4 @@
-function build_wmc_structure(tck_filename)
+function build_wmc_structure(stat_sub, mov_sub)
 
 if ~isdeployed
 	addpath(genpath('/N/u/brlife/git/vistasoft'));
@@ -15,6 +15,7 @@ tline = fgetl(fid);
 
 while ischar(tline)
     disp(tline);
+    tck_filename = strcat('tracts_tck/',stat_sub,'_',tline,'_tract_E',mov_sub,'.tck');
     fg_classified = dtiImportFibersMrtrix(tck_filename, 1);
     fgWrite(fg_classified, tline, 'mat');
     tline = fgetl(fid);
