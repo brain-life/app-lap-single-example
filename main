@@ -43,11 +43,11 @@ if [ -f $mov_life_id'_track.tck' -a $stat_life_id'_track.tck' ];then
 	stat_t1=`jq -r '.t1_static' config.json`
 	#python tck2trk.py $mov_t1 $mov_life_id'_track.tck';
 	#python tck2trk.py $stat_t1 $stat_life_id'_track.tck';
-    singularity exec -e docker://brainlife/dipy:0.14 bash -c "python ./tck2trk.py $mov_t1 ${mov_life_id}_track.tck && python ./tck2trk.py $stat_t1 ${stat_life_id}_track.tck"
+        singularity exec -e docker://brainlife/dipy:0.14 bash -c "python ./tck2trk.py $mov_t1 ${mov_life_id}_track.tck && python ./tck2trk.py $stat_t1 ${stat_life_id}_track.tck"
 else
 	echo "Input in fe format. Convert it to trk."
 	#matlab -nosplash -nodisplay -r lifeConverter
-    singularity exec docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/lifeConverter
+        singularity exec docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/lifeConverter
 
 	mv life_moving_output.trk $mov_life_id'_track.trk';
 	mv life_static_output.trk $stat_life_id'_track.trk';
@@ -69,19 +69,10 @@ ret=$?
 		exit $ret
 	fi
 
-echo "Compute affine with SLR"
+echo "Compute affine with SLR and dissimilarity of target tractogram"
 #python tractograms_slr.py -moving $mov_life_id'_track.trk' -static $stat_life_id'_track.trk' 
-singularity exec -e docker://brainlife/dipy:0.14 python ./tractograms_slr.py -moving ${mov_life_id}_track.trk -static ${stat_life_id}_track.trk
-ret=$?
-	if [ ! $ret -eq 0 ]; then
-		echo "Alignment failed"
-		echo $ret > finished
-		exit $ret
-	fi
-
-echo "Compute dissimilarity of target tractogram"
 #python compute_kdtree_and_dr_tractogram.py -static $stat_life_id'_track.trk' 
-singularity exec -e docker://brainlife/dipy:0.14 python ./compute_kdtree_and_dr_tractogram.py -static ${stat_life_id}_track.trk
+singularity exec -e docker://brainlife/dipy:0.14 bash -c "python ./tractograms_slr.py -moving ${mov_life_id}_track.trk -static ${stat_life_id}_track.trk && python ./compute_kdtree_and_dr_tractogram.py -static ${stat_life_id}_track.trk"
 ret=$?
 	if [ ! $ret -eq 0 ]; then
 		echo "Alignment failed"
@@ -105,14 +96,13 @@ while read tract_name; do
         echo $ret > finished
         exit $ret
     fi
-
     mv $output_filename tracts_tck;
     mv result_lap.npy ${subjID}'_'${tract_name}'_'$array_filename'_E'$mov_afq_id'.npy';
     mv superset_idx.npy ${subjID}'_'${tract_name}'_'$superset_filename'_E'$mov_afq_id'.npy';
 done < tract_name_list.txt
 
 echo "Build partial tractogram"
-output_filename=${subjID}'_var-partial_tract_'E${mov_afq_id}'.tck';
+output_filename=${subjID}'_var-partial_tract_E'${mov_afq_id}'.tck';
 #python build_partial_tractogram.py -tracts_tck_dir 'tracts_tck' -out ${output_filename};
 singularity exec -e docker://brainlife/dipy:0.14 python ./build_partial_tractogram.py -tracts_tck_dir tracts_tck -out $output_filename
 if [ -f ${output_filename} ]; then 
@@ -122,30 +112,15 @@ else
 	exit 1
 fi
 
-echo "Build a fg structure from tck registered"
-while read tract_name; do         
-    echo "Tract name: $tract_name"; 
-    tck_filename=\'tracts_tck/${subjID}_${tract_name}_tract_E${mov_afq_id}.tck\';
-    tract_filename=\'$tract_name\';
-    echo $tck_filename;
-    echo $tract_filename;
-    #matlab -nosplash -nodisplay -r "my_convert_tck2fg($tck_filename, $tract_filename)";
-    singularity exec docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/my_convert_tck2fg $tck_filename $tract_filename
-    if [ -f ${tract_name}.mat ]; then 
-    	echo "tck2fg conversion done."
-    else 
-        echo "tck2fg conversion failed."
-        exit 1
-    fi
-done < tract_name_list.txt
-
-echo "Merge the fg structures and create the files for the wmc structure"
-#matlab -nosplash -nodisplay -r "my_fg_merge()"
-singularity exec docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/my_fg_merge
+echo "Build a wmc structure"
+tck_filename=\'tracts_tck/${subjID}_${tract_name}_tract_E${mov_afq_id}.tck\';
+#matlab -nosplash -nodisplay -r "build_wmc_structure($tck_filename)";
+tck_filename='tracts_tck/'${subjID}'_'${tract_name}'_tract_E'${mov_afq_id}'.tck';
+singularity exec docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/build_wmc_structure $tck_filename
 if [ -f 'output.mat' ]; then 
-    echo "WCM structure created."
+    echo "WMC structure created."
 else 
-	echo "WCM structure missing."
+	echo "WMC structure missing."
 	exit 1
 fi
 
