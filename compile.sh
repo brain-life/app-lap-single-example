@@ -12,13 +12,11 @@ addpath(genpath('/N/u/brlife/git/jsonlab'));
 addpath(genpath('/N/u/brlife/git/o3d-code'));
 addpath(genpath('/N/u/brlife/git/encode'));
 mcc -m -R -nodisplay -d compiled lifeConverter
-mcc -m -R -nodisplay -d compiled my_convert_tck2fg
 mcc -m -R -nodisplay -d compiled afqConverter1
 
 addpath(genpath('/N/u/kitchell/Karst/Applications/mba'))
-addpath(genpath('/N/soft/mason/SPM/spm8'))
 addpath(genpath('/N/dc2/projects/lifebid/code/kitchell/wma'))
-mcc -m -R -nodisplay -d compiled my_fg_merge
+mcc -m -R -nodisplay -d compiled build_wmc_structure
 exit
 END
 matlab -nodisplay -nosplash -r build && rm build.m
