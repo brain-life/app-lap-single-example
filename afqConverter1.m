@@ -1,11 +1,9 @@
 function out = afqConverter1()
 
 if ~isdeployed
-	%addpath(genpath('/N/u/hayashis/BigRed2/git/vistasoft'));
 	addpath(genpath('/N/u/brlife/git/vistasoft'));
 	addpath(genpath('/N/u/brlife/git/jsonlab'));
 	addpath(genpath('/N/u/brlife/git/o3d-code'));
-	%addpath(genpath('/N/u/brlife/git/encode'));
 end
 
 config = loadjson('config.json');
@@ -19,7 +17,7 @@ load(fullfile(config.segmentation));
 fid=fopen('tract_name_list.txt', 'w');
 
 if (config.tract1 > 0)
-    for tract = [config.tract1, config.tract2, config.tract3, config.tract4]
+    for tract = [config.tract1, config.tract2, config.tract3, config.tract4, config.tract5, config.tract6, config.tract7, config.tract8]
         if (tract > 0)
             tract_name=strrep(fg_classified(tract).name,' ','_');
             write_fg_to_trk(fg_classified(tract),ref_src,sprintf('%s_tract.trk',tract_name));
