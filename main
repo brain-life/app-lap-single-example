@@ -69,37 +69,15 @@ ret=$?
 		exit $ret
 	fi
 
-echo "Compute affine with SLR and dissimilarity of target tractogram"
-#python tractograms_slr.py -moving $mov_life_id'_track.trk' -static $stat_life_id'_track.trk' 
-#python compute_kdtree_and_dr_tractogram.py -static $stat_life_id'_track.trk' 
-singularity exec -e docker://brainlife/dipy:0.14 bash -c "python ./tractograms_slr.py -moving ${mov_life_id}_track.trk -static ${stat_life_id}_track.trk && python ./compute_kdtree_and_dr_tractogram.py -static ${stat_life_id}_track.trk"
-ret=$?
-	if [ ! $ret -eq 0 ]; then
-		echo "Alignment failed"
-		echo $ret > finished
-		exit $ret
-	fi
 
 echo "Running LAP single example"
 mkdir tracts_tck;
-while read tract_name; do         
-    echo "Tract name: $tract_name"; 
-    tract_example=$tract_name'_tract.trk'; 
-    output_filename=${subjID}'_'$tract_name'_tract_E'$mov_afq_id'.tck';
-    array_filename='result_lap';
-    superset_filename='superset_idx';
-    #python single_lap.py -moving $mov_life_id'_track.trk' -static $stat_life_id'_track.trk' -ex $tract_example -out $output_filename;
-    singularity exec -e docker://brainlife/dipy:0.14 python ./single_lap.py -moving ${mov_life_id}_track.trk -static ${stat_life_id}_track.trk -ex $tract_example -out $output_filename
-    ret=$?
-    if [ ! $ret -eq 0 ]; then
-        echo "LAP single example failed"
-        echo $ret > finished
-        exit $ret
-    fi
-    mv $output_filename tracts_tck;
-    mv result_lap.npy ${subjID}'_'${tract_name}'_'$array_filename'_E'$mov_afq_id'.npy';
-    mv superset_idx.npy ${subjID}'_'${tract_name}'_'$superset_filename'_E'$mov_afq_id'.npy';
-done < tract_name_list.txt
+singularity exec -e docker://brainlife/dipy:0.14 python ./execute_single_lap.py -mov_ID ${mov_life_id} -stat_ID ${stat_life_id} -list tract_name_list.txt
+ret=$?
+if [ ! $ret -eq 0 ]; then
+    echo "LAP single example failed"
+    exit $ret
+fi
 
 echo "Build partial tractogram"
 output_filename=${subjID}'_var-partial_tract_E'${mov_afq_id}'.tck';
