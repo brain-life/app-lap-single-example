@@ -11,6 +11,7 @@ import nibabel as nib
 import numpy as np
 from nibabel.streamlines import load
 from dissimilarity import compute_dissimilarity, dissimilarity
+from dipy.tracking.streamline import set_number_of_points
 from dipy.tracking.distances import bundles_distances_mam
 from sklearn.neighbors import KDTree
 from dipy.tracking.utils import length

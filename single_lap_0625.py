@@ -15,6 +15,7 @@ from nibabel.streamlines import load
 from tractograms_slr import tractograms_slr
 from dipy.tracking.streamline import apply_affine
 from dissimilarity import compute_dissimilarity, dissimilarity
+from dipy.tracking.streamline import set_number_of_points
 from dipy.tracking.distances import bundles_distances_mam
 from sklearn.neighbors import KDTree
 from dipy.tracking.utils import length
