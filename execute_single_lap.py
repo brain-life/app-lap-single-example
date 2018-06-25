@@ -11,9 +11,9 @@ import os.path
 import nibabel as nib
 import numpy as np
 from nibabel.streamlines import load
-from tractograms_slr import tractograms_slr
-from compute_kdtree_and_dr_tractogram import compute_kdtree_and_dr_tractogram
-from single_lap import single_lap, save_bundle
+from tractograms_slr_0625 import tractograms_slr
+from compute_kdtree_and_dr_tractogram_0625 import compute_kdtree_and_dr_tractogram
+from single_lap_0625 import single_lap, save_bundle
 #from dipy.tracking.streamline import apply_affine
 
 #import pickle
@@ -53,16 +53,6 @@ if __name__ == '__main__':
 
 	kdt, prototypes = compute_kdtree_and_dr_tractogram(static_tractogram)	
 
-	#Saving files
-	#kdt_filename='kdt'
-	#pickle.dump(kdt, open(kdt_filename, 'w'), protocol=pickle.HIGHEST_PROTOCOL)
-	#np.save('prototypes', prototypes)
-
-	## Estimate target tract
-	#print("Retrieving kdt and prototypes.")
-	#kdt_filename='kdt'
-	#kdt = pickle.load(open(kdt_filename))
-	#prototypes = np.load('prototypes.npy')
 	with open(args.list) as f:
 		content = f.read().splitlines()
 	
