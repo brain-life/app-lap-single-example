@@ -14,9 +14,7 @@ from nibabel.streamlines import load
 from tractograms_slr_0625 import tractograms_slr
 from compute_kdtree_and_dr_tractogram_0625 import compute_kdtree_and_dr_tractogram
 from single_lap_0625 import single_lap, save_bundle
-#from dipy.tracking.streamline import apply_affine
 
-#import pickle
 
 try:
     from linear_assignment import LinearAssignment
@@ -24,7 +22,6 @@ except ImportError:
     print("WARNING: Cythonized LAPJV not available. Falling back to Python.")
     print("WARNING: See README.txt")
     from linear_assignment_numpy import LinearAssignment
-
 
 
 
@@ -60,9 +57,6 @@ if __name__ == '__main__':
 		tract_filename = '%s_tract.trk' %(tract_name)
 		output_filename = 'tracts_tck/%s_%s_tract_E%s.tck' %(args.stat_ID, tract_name, args.mov_ID)
 		result_lap = single_lap(moving_tractogram_filename, static_tractogram_filename, kdt, prototypes, tract_filename)
-
-		#np.save('result_lap', result_lap)
-		
 		estimated_bundle_idx = result_lap[0]
 		save_bundle(estimated_bundle_idx, static_tractogram_filename, output_filename)
 

@@ -17,6 +17,7 @@ from dipy.tracking.streamline import apply_affine
 from dissimilarity import compute_dissimilarity, dissimilarity
 from dipy.tracking.distances import bundles_distances_mam
 from sklearn.neighbors import KDTree
+from dipy.tracking.utils import length
 import pickle
 
 try:
