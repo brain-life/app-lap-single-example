@@ -35,7 +35,7 @@ def compute_kdtree_and_dr_tractogram(tractogram, num_prototypes=None, distance=b
                                                          num_prototypes=num_prototypes,
                                                          distance=bundles_distances_mam,
                                                          prototype_policy='sff',
-                                                         n_jobs=8,
+                                                         n_jobs=16,
                                                          verbose=False)
     prototypes = tractogram[prototype_idx]
     print("Building the KD-tree of tractogram.")
