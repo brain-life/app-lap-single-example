@@ -26,7 +26,7 @@ if (config.tract1 > 0)
     end  
   
 elseif length(fg_classified) == 20
-    disp('AFQ segmentation selected. The plots of the following tracts will be returned:')
+    disp('AFQ segmentation selected. The following tracts will be returned:')
     disp('Left and Right Thalamic Radiation, Left and Rigth Corticospinal, Left and Right IFOF, Left and Right Arcuate.')
     for tract = [1, 2, 3, 4, 11, 12, 19, 20]
 	tract_name=strrep(fg_classified(tract).name,' ','_');
@@ -35,7 +35,7 @@ elseif length(fg_classified) == 20
     end
 
 elseif length(fg_classified) == 79
-    disp('Wma segmentation selected. The plots of the following tracts will be returned:')
+    disp('Wma segmentation selected. The following tracts will be returned:')
     disp('Left and Rigth pArc, Left and Rigth TPC, Left and Rigth MdLF-SPL, Left and Rigth MdLF-Ang.')
     for tract = [38, 39, 40, 41, 42, 43, 44, 45]
 	tract_name=strrep(fg_classified(tract).name,' ','_');
